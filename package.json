@@ -1,6 +1,6 @@
 {
   "name": "gulp-noprotocol",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "NoProtocol's Best Practices for Gulp",
   "main": "index.js",
   "repository": {
@@ -14,6 +14,7 @@
     "gulp-ng-annotate": "^0.3.0",
     "gulp-sass": "^0.7.2",
     "gulp-sourcemaps": "^1.1.0",
+    "gulp-templatecache": "0.0.3",
     "gulp-uglify": "^0.3.1",
     "gulp-util": "^3.0.0"
   }

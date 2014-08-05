@@ -28,7 +28,7 @@ gulp.task('bundle-libs', function() {
 
 gulp.task('bundle-app', function () {
   return gulp
-    .src(['public/js/**/*.js'])
+    .src(['public/js/**/*.js', 'public/views/**/*.html', 'public/js/directives/**/*.html'])
     .pipe(noprotocol.angular(['ngRoute']))
     .pipe(gulp.dest('public/dist'));
 });

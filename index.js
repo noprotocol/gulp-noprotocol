@@ -2,6 +2,7 @@
 
 // node
 var Buffer = require('buffer').Buffer;
+var path = require('path');
 // npm
 var es = require('event-stream');
 var concat = require('gulp-concat');
@@ -28,6 +29,7 @@ var noprotocol = module.exports = {
   },
   /**
    * A gulp-sass stream with improved defaults.
+   * compressed + external sourcemap
    *
    * @param {Object} [options]
    * @returns {Stream}
@@ -36,8 +38,22 @@ var noprotocol = module.exports = {
     var options = options || {};
     options.errLogToConsole = true;
     options.outputStyle = 'compressed';
-//    options.sourceComments = 'map';  -- Broken in current version of nodejs/libsass
-    return sass(options);
+    options.sourceComments = 'map';
+    var inputSteam = sass(options);
+    var outputStream = es.map(function (file, callback ) {
+      var contents = file.contents.toString('utf8');
+      var pos = contents.indexOf('/*# sourceMappingURL=data:application/json;base64,');
+      file.contents = new Buffer(contents.slice(0, pos) + '\n/*# sourceMappingURL=' + path.basename(file.path) + '.map */');
+      callback(null, file);
+      outputStream.emit('data', new gutil.File({
+        cwd: file.cwd,
+        base: file.base,
+        path: file.path + '.map',
+        contents: new Buffer(contents.slice(pos + 50, -2), 'base64')
+      }));
+    });
+    inputSteam.pipe(outputStream);
+    return es.duplex(inputSteam, outputStream);
   },
   /**
    * Example: gulp.watch('gulpfile.js', noprotocol.exit('gulpfile.js has changed'));

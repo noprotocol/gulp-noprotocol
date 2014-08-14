@@ -12,8 +12,8 @@
     "event-stream": "^3.1.7",
     "gulp-concat": "^2.3.4",
     "gulp-ng-annotate": "^0.3.0",
-    "gulp-sass": "^0.7.2",
-    "gulp-sourcemaps": "^1.1.0",
+    "gulp-sass": "^0.7.3",
+    "gulp-sourcemaps": "^1.1.1",
     "gulp-templatecache": "0.0.3",
     "gulp-uglify": "^0.3.1",
     "gulp-util": "^3.0.0"

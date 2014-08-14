@@ -29,14 +29,14 @@ gulp.task('bundle-libs', function() {
 gulp.task('bundle-app', function () {
   return gulp
     .src(['public/js/**/*.js', 'public/views/**/*.html', 'public/js/directives/**/*.html'])
-    .pipe(noprotocol.angular(['ngRoute']))
+    .pipe(noprotocol.angular({ deps: ['ngRoute']}))
     .pipe(gulp.dest('public/dist'));
 });
 
 gulp.task('watch', ['sass', 'bundle-app', 'bundle-libs'], function() {
   gulp.watch('public/sass/**/*.{scss,sass}', ['sass']);
 
-  gulp.watch('public/js/**/*.js', ['bundle-app']);
+  gulp.watch(['public/js/**/*.js', 'public/views/**/*.html'], ['bundle-app']);
 
   livereload.listen();
   var globs = [

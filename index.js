@@ -1,26 +1,30 @@
-var gutil = require('gulp-util');
-var sass = require('gulp-sass');
-var concat = require('gulp-concat');
-var uglify = require('gulp-uglify');
-var ngAnnotate = require('gulp-ng-annotate');
-var sourcemaps = require('gulp-sourcemaps');
-var es = require('event-stream');
-var Buffer = require('buffer').Buffer;
-var templateCache = require('gulp-templatecache');
-
 'use strict';
+
+// node
+var Buffer = require('buffer').Buffer;
+// npm
+var es = require('event-stream');
+var concat = require('gulp-concat');
+var ngAnnotate = require('gulp-ng-annotate');
+var sass = require('gulp-sass');
+var sourcemaps = require('gulp-sourcemaps');
+var templateCache = require('gulp-templatecache');
+var uglify = require('gulp-uglify');
+var gutil = require('gulp-util');
+
 var noprotocol = module.exports = {
   /**
    * Expose gulp plugins
    */
   plugins: {
-    gutil: gutil,
-    sourcemaps: sourcemaps,
-    sass: sass,
+    eventStream: es,
     concat: concat,
-    uglify: uglify,
     ngAnnotate: ngAnnotate,
-    templateCache: templateCache
+    sass: sass,
+    sourcemaps: sourcemaps,
+    templateCache: templateCache,
+    uglify: uglify,
+    gutil: gutil
   },
   /**
    * A gulp-sass stream with improved defaults.
@@ -47,20 +51,27 @@ var noprotocol = module.exports = {
       process.exit();
     };
   },
-
-
   /**
-   * Build an optimized angular app.
+   * Build an optimized angular module.
    *
-   * @param {Array} [deps] Dependancies for the angular.module("app")
+   * templateCache & ngAnnotate -> concat -> uglify
+   *
+   * @param {Object}
+   *   module: Name of the angular module
+   *   deps: Dependancies for the angular.module("app") (When ommited, no angular.module() is generated)
+   *   output:  Filename for the generated output.
    * @returns {Stream}
    */
-  angular: function (deps) {
+  angular: function(options) {
+    // defaults
+    options = options || {};
+    options.module = options.module || 'app';
+    options.output = options.output || 'main.min.js';
     // create 2 streams, one for scrips and one for templates.
-    var angularStream = this._angularApp(deps);
+    var angularStream = this._angularModule(options.output, options.deps ? options.module : false, options.deps);
     var templateStream = templateCache({
       output: '__generated__/templates.js',
-      moduleName: 'app',
+      moduleName: options.module,
       strip: 'public/',
       minify: {
         collapseWhitespace: true,
@@ -68,7 +79,7 @@ var noprotocol = module.exports = {
       }
     });
     // Split of the html files
-    var input = es.map(function (data, callback) {
+    var input = es.map(function(data, callback) {
       if (data.path.substr(-3) === '.js') {
         callback(null, data);
       } else if (data.path.substr(-5) === '.html' || data.path.substr(-4) === '.htm') {
@@ -81,33 +92,51 @@ var noprotocol = module.exports = {
     //
     input.pipe(angularStream, {end: false});
     templateStream.pipe(angularStream);
-    input.on('end', function () {
-        templateStream.end();
+    input.on('end', function() {
+      templateStream.end();
     });
     return es.duplex(input, angularStream);
   },
+  /**
+   *
+   * @param {String} output  The name of the concatenated output file.
+   * @param {String} [module]  The name of the module (When set, a angular.module declaration file is generated)
+   * @param {String} [deps]
+   * @returns {unresolved}
+   */
+  _angularModule: function(output, module, deps) {
+    var inputStream = sourcemaps.init({loadMaps: true});
+    var outputStream = sourcemaps.write('./');
 
-  _angularApp: function(deps) {
-    var input = sourcemaps.init({loadMaps: true});
-    var output = sourcemaps.write('./');
-
-    var file = new gutil.File({
-      path: '__generated__/app.js',
-      contents: new Buffer("var app = angular.module('app'," + JSON.stringify(deps) + ");")
+    if (module) {
+      deps = deps || [];
+      var file = new gutil.File({
+        path: '__generated__/' + module + '.js',
+        contents: new Buffer("var " + module + " = angular.module('" + module + "'," + JSON.stringify(deps) + ");")
+      });
+      inputStream.write(file);
+    }
+    var annotateStream = ngAnnotate({
+      regexp: '^' + module + '$',
+      add: true
     });
-    input.write(file);
-    input
-      .pipe(ngAnnotate({
-        regexp: '^app$',
-        add: true
-      }))
+    annotateStream.on('error', function(e) {
+      gutil.log(gutil.colors.red(e.message));
+      var file = new gutil.File({
+        path: '__generated__/gulpfile.js',
+        contents: new Buffer("console.error('[gulp]', " + JSON.stringify(e.message) + ");")
+      });
+      annotateStream.end(file);
+    });
+
+    inputStream
+      .pipe(annotateStream)
+      .pipe(concat(output))
       .pipe(uglify())
-      .pipe(concat('app.min.js'))
-      .pipe(output);
+      .pipe(outputStream);
 
-    return es.duplex(input, output);
+    return es.duplex(inputStream, outputStream);
   },
-
   /**
    * Concat javascript files and generate a sourcemap.
    *

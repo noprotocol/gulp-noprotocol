@@ -168,5 +168,33 @@ var noprotocol = module.exports = {
       .pipe(output);
 
     return es.duplex(input, output);
+  },
+  /**
+   * Bundle javascript files, optional ugliy and generate a sourcemap
+   *
+   * @param  {Object}
+   *   :filename Name of the bundled file
+   *   :uglify   Use uglify on the bundled file
+   * @return {Stream}
+   */
+  bundle: function(options) {
+    var filename = options.filename || 'libs.bundle.js';
+    var uglify = options.uglify || false;
+
+    var input = sourcemaps.init({loadMaps: true});
+    var output = sourcemaps.write('./');
+
+    input
+      .pipe(concat(filename));
+
+    if (uglify) {
+      input
+        .pipe(uglify());
+    }
+    
+    input
+      .pipe(output);
+
+    return es.duplex(input, output);
   }
 };

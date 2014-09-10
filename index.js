@@ -185,12 +185,15 @@ var noprotocol = module.exports = {
     var output = sourcemaps.write('./');
 
     input
-      .pipe(concat(filename))
-      .pipe(output);
+      .pipe(concat(filename));
 
     if (uglify) {
-      input.pipe(uglify());
+      input
+        .pipe(uglify());
     }
+    
+    input
+      .pipe(output);
 
     return es.duplex(input, output);
   }

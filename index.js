@@ -40,10 +40,17 @@ var noprotocol = module.exports = {
      */
     sass: function (options) {
         var options = options || {};
-        options.errLogToConsole = true;
         options.outputStyle = 'compressed';
-        options.sourceComments = 'map';
-        var inputSteam = sass(options);
+        // options.sourceComments = 'map'; // default off, causes "Segmentation fault: 11" and kills gulp watch on every sass error.
+        // options.errLogToConsole = true;
+        options.onError = function (err) {
+            gutil.beep();
+            gutil.log(gutil.colors.red('[gulp-sass] ' + err));
+        }
+        var inputStream = sass(options);
+        if (!options.sourceComments || options.sourceComments !== 'map') { // No sourcemap?
+            return inputStream;
+        }
         var outputStream = es.map(function (file, callback) {
             var contents = file.contents.toString('utf8');
             var pos = contents.indexOf('/*# sourceMappingURL=data:application/json;base64,');
@@ -56,8 +63,8 @@ var noprotocol = module.exports = {
                 contents: new Buffer(contents.slice(pos + 50, -2), 'base64')
             }));
         });
-        inputSteam.pipe(outputStream);
-        return es.duplex(inputSteam, outputStream);
+        inputStream.pipe(outputStream);
+        return es.duplex(inputStream, outputStream);
     },
     /**
      * Example: gulp.watch('gulpfile.js', noprotocol.exit('gulpfile.js has changed'));

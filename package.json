@@ -1,6 +1,6 @@
 {
   "name": "gulp-noprotocol",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "NoProtocol's Best Practices for Gulp",
   "main": "index.js",
   "repository": {
@@ -8,14 +8,19 @@
     "url": "https://github.com/NoProtocol/gulp-noprotocol.git"
   },
   "homepage": "https://github.com/NoProtocol/gulp-noprotocol",
+  "bugs": {
+    "url": "https://github.com/NoProtocol/gulp-noprotocol/issues"
+  },
   "dependencies": {
     "event-stream": "^3.1.7",
-    "gulp-concat": "^2.3.4",
-    "gulp-ng-annotate": "^0.3.0",
+    "gulp-clone": "^1.0.0",
+    "gulp-concat": "^2.4.1",
+    "gulp-ng-annotate": "^0.3.2",
+    "gulp-rename": "^1.2.0",
     "gulp-sass": "^0.7.3",
-    "gulp-sourcemaps": "^1.1.1",
+    "gulp-sourcemaps": "^1.1.5",
     "gulp-templatecache": "0.0.3",
-    "gulp-uglify": "^0.3.1",
+    "gulp-uglify": "^0.3.2",
     "gulp-util": "^3.0.0"
   }
 }

@@ -93,7 +93,7 @@ var noprotocol = module.exports = {
         // defaults
         options = options || {};
         options.module = options.module || 'app';
-        options.output = options.output || 'main.min.js';
+        options.output = options.output || 'main.js';
         // create 2 streams, one for scrips and one for templates.
         var angularStream = this._angularModule(options.output, options.deps ? options.module : false, options.deps);
         var templateStream = templateCache({

@@ -40,7 +40,7 @@ var noprotocol = module.exports = {
      */
     sass: function (options) {
         var options = options || {};
-        options.outputStyle = 'compressed';
+        options.outputStyle = options.outputStyle || 'compressed';
         // options.sourceComments = 'map'; // default off, causes "Segmentation fault: 11" and kills gulp watch on every sass error.
         // options.errLogToConsole = true;
         options.onError = function (err) {

@@ -8,6 +8,7 @@ var es = require('event-stream');
 var clone = require('gulp-clone');
 var concat = require('gulp-concat');
 var ngAnnotate = require('gulp-ng-annotate');
+var please = require('gulp-pleeease');
 var rename = require('gulp-rename');
 var sass = require('gulp-sass');
 var sourcemaps = require('gulp-sourcemaps');
@@ -24,6 +25,7 @@ var noprotocol = module.exports = {
         clone: clone,
         concat: concat,
         ngAnnotate: ngAnnotate,
+        please: please,
         rename: rename,
         sass: sass,
         sourcemaps: sourcemaps,
@@ -33,38 +35,70 @@ var noprotocol = module.exports = {
     },
     /**
      * A gulp-sass stream with improved defaults.
-     * compressed + external sourcemap
+     * external sourcemap + pleeease (autoprefix, mqpacker, etc)
      *
-     * @param {Object} [options]
+     *
+     * @param {Object} [options] {}
      * @returns {Stream}
      */
     sass: function (options) {
         var options = options || {};
-        options.outputStyle = options.outputStyle || 'compressed';
-        // options.sourceComments = 'map'; // default off, causes "Segmentation fault: 11" and kills gulp watch on every sass error.
-        // options.errLogToConsole = true;
+        options.sourceComments = 'map';
         options.onError = function (err) {
             gutil.beep();
             gutil.log(gutil.colors.red('[gulp-sass] ' + err));
-        }
-        var inputStream = sass(options);
+        };
+        options.please = options.please || {
+            autoprefixer: {
+                browsers: ['last 2 versions', 'ie >= 9']
+            }
+        };
+        var sassSteam = sass(options);
+        var pleaseStream = please(options.please);
+
         if (!options.sourceComments || options.sourceComments !== 'map') { // No sourcemap?
-            return inputStream;
+            sassSteam.pipe(pleaseStream);
+            return es.duplex(sassSteam, pleaseStream);
         }
-        var outputStream = es.map(function (file, callback) {
+        // gulp-sourcemap doesn't work as advertised, jumping through hoops here to get it working properly
+        var inputStream = this.withSourcemap(sassSteam);
+        var outputStream = this.withSourcemap(pleaseStream);
+        inputStream.pipe(outputStream);
+        var combinedStream = es.duplex(inputStream, outputStream);
+        var externalSourcemapStream = this.externalSourcemap();
+        combinedStream.pipe(externalSourcemapStream);
+        return es.duplex(combinedStream, externalSourcemapStream);
+    },
+    /**
+     * Wrap a stream with sourcemaps init / write streams.
+     *
+     * @param {Stream} stream
+     * @param {Object} [options] https://github.com/floridoo/gulp-sourcemaps
+     * @returns {Stream}
+     */
+    withSourcemap: function (stream, options) {
+        options = options || {loadMaps: true, debug: true};
+        var inputStream = sourcemaps.init(options);
+        var outputStream = sourcemaps.write(options.output);
+        inputStream
+            .pipe(stream)
+            .pipe(outputStream);
+        return es.duplex(inputStream, outputStream);
+    },
+    externalSourcemap: function () {
+        var stream = es.map(function (file, callback) {
             var contents = file.contents.toString('utf8');
             var pos = contents.indexOf('/*# sourceMappingURL=data:application/json;base64,');
             file.contents = new Buffer(contents.slice(0, pos) + '\n/*# sourceMappingURL=' + path.basename(file.path) + '.map */');
             callback(null, file);
-            outputStream.emit('data', new gutil.File({
+            stream.emit('data', new gutil.File({
                 cwd: file.cwd,
                 base: file.base,
                 path: file.path + '.map',
                 contents: new Buffer(contents.slice(pos + 50, -2), 'base64')
             }));
         });
-        inputStream.pipe(outputStream);
-        return es.duplex(inputStream, outputStream);
+        return stream;
     },
     /**
      * Example: gulp.watch('gulpfile.js', noprotocol.exit('gulpfile.js has changed'));

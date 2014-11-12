@@ -13,6 +13,7 @@ var rename = require('gulp-rename');
 var sass = require('gulp-sass');
 var sourcemaps = require('gulp-sourcemaps');
 var templateCache = require('gulp-templatecache');
+var traceur = require('gulp-traceur');
 var uglify = require('gulp-uglify');
 var gutil = require('gulp-util');
 
@@ -30,6 +31,7 @@ var noprotocol = module.exports = {
         sass: sass,
         sourcemaps: sourcemaps,
         templateCache: templateCache,
+        traceur: traceur,
         uglify: uglify,
         gutil: gutil
     },
@@ -37,13 +39,14 @@ var noprotocol = module.exports = {
      * A gulp-sass stream with improved defaults.
      * external sourcemap + pleeease (autoprefix, mqpacker, etc)
      *
-     *
      * @param {Object} [options] {}
      * @returns {Stream}
      */
     sass: function (options) {
         var options = options || {};
-        options.sourceComments = 'map';
+        if (typeof options.sourceComments === 'undefined') {
+            options.sourceComments = 'map';
+        }
         options.onError = function (err) {
             gutil.beep();
             gutil.log(gutil.colors.red('[gulp-sass] ' + err));
@@ -61,8 +64,8 @@ var noprotocol = module.exports = {
             return es.duplex(sassSteam, pleaseStream);
         }
         // gulp-sourcemap doesn't work as advertised, jumping through hoops here to get it working properly
-        var inputStream = this.withSourcemap(sassSteam);
-        var outputStream = this.withSourcemap(pleaseStream);
+        var inputStream = this.withSourcemap(sassSteam, null, null);
+        var outputStream = this.withSourcemap(pleaseStream, null, null);
         inputStream.pipe(outputStream);
         var combinedStream = es.duplex(inputStream, outputStream);
         var externalSourcemapStream = this.externalSourcemap();
@@ -71,20 +74,32 @@ var noprotocol = module.exports = {
     },
     /**
      * Wrap a stream with sourcemaps init / write streams.
+     * @link https://github.com/floridoo/gulp-sourcemaps
      *
      * @param {Stream} stream
-     * @param {Object} [options] https://github.com/floridoo/gulp-sourcemaps
+     * @param {Object} [initOptions]
+     * @param {String} [output] folder for the sourcemap
+     * @param {Object} [writeOptions]
      * @returns {Stream}
      */
-    withSourcemap: function (stream, options) {
-        options = options || {loadMaps: true, debug: true};
-        var inputStream = sourcemaps.init(options);
-        var outputStream = sourcemaps.write(options.output);
+    withSourcemap: function (stream, initOptions, output, writeOptions) {
+        initOptions = initOptions || { loadMaps: true, debug: true };
+        writeOptions = writeOptions || { debug: true };
+        if (typeof output === 'undefined') {
+            output = './';
+        }
+        var inputStream = sourcemaps.init(initOptions);
+        var outputStream = sourcemaps.write(output, writeOptions);
         inputStream
             .pipe(stream)
             .pipe(outputStream);
         return es.duplex(inputStream, outputStream);
     },
+    /**
+     * A stream that extract an inline sourcemap and puts it into an external .map file.
+     *
+     * @returns {Stream}
+     */
     externalSourcemap: function () {
         var stream = es.map(function (file, callback) {
             var contents = file.contents.toString('utf8');
@@ -115,7 +130,7 @@ var noprotocol = module.exports = {
     /**
      * Build an optimized angular module.
      *
-     * templateCache & ngAnnotate -> concat -> uglify
+     * templateCache & traceur -> ngAnnotate -> concat -> uglify
      *
      * @param {Object}
      *   module: Name of the angular module
@@ -127,7 +142,7 @@ var noprotocol = module.exports = {
         // defaults
         options = options || {};
         options.module = options.module || 'app';
-        options.output = options.output || 'main.js';
+        options.output = options.output || 'main.min.js';
         // create 2 streams, one for scrips and one for templates.
         var angularStream = this._angularModule(options.output, options.deps ? options.module : false, options.deps);
         var templateStream = templateCache({
@@ -191,19 +206,40 @@ var noprotocol = module.exports = {
         });
 
         var cloneSink = clone.sink();
-        inputStream
+        var concatStream = inputStream
+            .pipe(this.traceur())
             .pipe(annotateStream)
-            .pipe(concat(output))
-            .pipe(cloneSink)
-            .pipe(rename(function (path) {
-                path.basename += ".min";
-            }))
-            .pipe(uglify())
-            .pipe(cloneSink.tap())
-            .pipe(outputStream);
+            .pipe(concat(output));
+
+        if (output.substr(output.length - 4) === '.min') {
+            concatStream
+                .pipe(cloneSink)
+                .pipe(rename(function (path) {
+                    path.basename += ".min";
+                }))
+                .pipe(uglify())
+                .pipe(cloneSink.tap())
+                .pipe(outputStream);
+        } else {
+            concatStream
+                .pipe(uglify())
+                .pipe(outputStream);
+        }
+
 
 
         return es.duplex(inputStream, outputStream);
+    },
+    /**
+     * @returns {Stream}
+     */
+    traceur: function (options) {
+        var stream = traceur(options);
+        stream.on('error', function (e) {
+            gutil.log('[gulp-traceur]', gutil.colors.red(e.message));
+            gutil.beep();
+        });
+        return stream;
     },
     /**
      * Concat javascript files and generate a sourcemap.

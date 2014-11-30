@@ -16,15 +16,24 @@
     "css-mqpacker": "^2.0.0",
     "csswring": "^2.0.0",
     "event-stream": "^3.1.7",
+    "gulp-concat": "^2.4.2",
+    "gulp-ng-annotate": "^0.3.6",
     "gulp-postcss": "^3.0.0",
     "gulp-sass": "^1.1.0",
     "gulp-sourcemaps": "^1.2.8",
+    "gulp-templatecache": "0.0.3",
+    "gulp-traceur": "^0.14.1",
+    "gulp-uglify": "^1.0.1",
     "multistream": "^1.4.2",
-    "stream-combiner2": "^1.0.2"
+    "stream-combiner2": "^1.0.2",
+    "vinyl": "^0.4.5"
   },
   "devDependencies": {
     "gulp": "^3.8.10",
     "mocha": "^2.0.1",
     "stream-assert-gulp": "^0.4.3"
+  },
+  "scripts": {
+    "test": "node_modules/.bin/mocha -R spec test"
   }
 }

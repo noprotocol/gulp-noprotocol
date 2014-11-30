@@ -1,3 +1,4 @@
+"use strict";
 var gulp = require('gulp');
 var assert = require('assert');
 var streamAssert = require('stream-assert-gulp');

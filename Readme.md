@@ -10,10 +10,10 @@ var gulp = require('gulp');
 var livereload = require('gulp-livereload');
 var noprotocol = require('gulp-noprotocol');
 
-gulp.task('sass', function() {
+gulp.task('css', function() {
   return gulp.src('public/sass/**/*.{scss,sass}')
-    .pipe(noprotocol.sass())
-    .pipe(gulp.dest('public/css'));
+    .pipe(noprotocol.css())
+    .pipe(gulp.dest('public/dist'));
 });
 
 
@@ -33,8 +33,8 @@ gulp.task('bundle-app', function () {
     .pipe(gulp.dest('public/dist'));
 });
 
-gulp.task('watch', ['sass', 'bundle-app', 'bundle-libs'], function() {
-  gulp.watch('public/sass/**/*.{scss,sass}', ['sass']);
+gulp.task('watch', ['css', 'bundle-app', 'bundle-libs'], function() {
+  gulp.watch('public/sass/**/*.{scss,sass}', ['css']);
 
   gulp.watch(['public/js/**/*.js', 'public/views/**/*.html'], ['bundle-app']);
 
@@ -49,7 +49,7 @@ gulp.task('watch', ['sass', 'bundle-app', 'bundle-libs'], function() {
   gulp.watch('gulpfile.js', noprotocol.exit('gulpfile.js has changed, quiting...'));
 });
 
-gulp.task('deploy', ['sass', 'bundle-libs', 'bundle-app']);
+gulp.task('deploy', ['css', 'bundle-libs', 'bundle-app']);
 
 gulp.task('default', ['watch']);
 ```

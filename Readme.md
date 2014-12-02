@@ -26,6 +26,7 @@ var server = require('gulp-develop-server');
 gulp.task('css', function() {
     return gulp.src('sass/**/*.{scss,sass}')
         .pipe(noprotocol.css())
+        .on('error', noprotocol.notify)
         .pipe(gulp.dest('public/dist'));
 });
 
@@ -35,10 +36,7 @@ gulp.task('bundle-libs', function() {
         'public/libs/angular/angular.min.js'
         'public/libs/angular-animate/angular-animate.min.js'
     ])
-    .pipe(noprotocol.js({
-        bundle: 'libs.bundle.js',
-        minify: false
-    }))
+    .pipe(noprotocol.bundle('libs.bundle.js'))
     .pipe(gulp.dest('public/dist'));
 });
 

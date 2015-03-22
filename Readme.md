@@ -15,6 +15,9 @@ Create an minified, sourcemapped, transpiled javascript from ES5 / ES6 files.
 ### noprotocol.angular()
 Create a minified, sourcemapped, transpiled, angular module bundle.
 
+### noprotocol.notify
+Report gulp errors as OS X notifications, and prevent gulp from crashing.
+
 ## Example gulpfile.js
 
 ```js
@@ -24,7 +27,7 @@ var livereload = require('gulp-livereload');
 var server = require('gulp-develop-server');
 
 gulp.task('css', function() {
-    return gulp.src('sass/**/*.{scss,sass}')
+    return gulp.src('public/sass/**/*.{scss,sass}')
         .pipe(noprotocol.css())
         .on('error', noprotocol.notify)
         .pipe(gulp.dest('public/dist'));
@@ -37,6 +40,7 @@ gulp.task('bundle-libs', function() {
         'public/libs/angular-animate/angular-animate.min.js'
     ])
     .pipe(noprotocol.bundle('libs.bundle.js'))
+    .on('error', noprotocol.notify)
     .pipe(gulp.dest('public/dist'));
 });
 
@@ -50,6 +54,7 @@ gulp.task('bundle-app', function () {
         .pipe(noprotocol.angular({ 
             deps: ['ngAnimate']
         }))
+        .on('error', noprotocol.notify)
         .pipe(gulp.dest('public/dist'));
 });
 // Example node development server
@@ -63,7 +68,7 @@ gulp.task('watch', ['css', 'bundle-app', 'bundle-libs', 'node-server'], function
 
     livereload.listen();
     gulp.watch('app/**/*.js', server.restart);
-    gulp.watch('sass/**/*.{scss,sass}', ['css']);
+    gulp.watch('public/sass/**/*.{scss,sass}', ['css']);
     gulp.watch(['public/js/**/*.js', 'public/views/**/*.html'], ['bundle-app']);
     gulp.watch([
         'public/dist/*.css',

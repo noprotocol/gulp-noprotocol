@@ -75,6 +75,10 @@ gulp.task('watch', ['css', 'bundle-app', 'bundle-libs', 'node-server'], function
         'public/dist/*.js',
         'app/views/**/*.blade.php'
     ]).on('change', livereload.changed);
+    gulp.watch(['gulpfile.js'], function () {
+        noprotocol.notify('Stopping `gulp watch`, gulpfile.js was changed');
+        process.exit();
+    });
 });
 
 gulp.task('deploy', ['css', 'bundle-libs', 'bundle-app']);

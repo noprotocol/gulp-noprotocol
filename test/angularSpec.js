@@ -18,7 +18,7 @@ describe('noprocotol.angular', function () {
             }))
             .pipe(streamAssert.second(function(file) {
                 assert.equal(file.relative, 'app.min.js');
-                assert.equal(file.contents.toString(), "\"use strict\";var app=angular.module(\"app\",[\"ngAnimate\"]);app.controller(\"TestCtrl\",[\"$scope\",function(r){return!0}]);\n//# sourceMappingURL=app.min.js.map");
+                assert.equal(file.contents.toString(), "\"use strict\";var app=angular.module(\"app\",[\"ngAnimate\"]);app.controller(\"TestCtrl\",[\"$scope\",function(r){return!0}]);\n//# sourceMappingURL=app.min.js.map\n");
             }))
             .on('end', done);
     });
@@ -29,7 +29,7 @@ describe('noprocotol.angular', function () {
             .pipe(streamAssert.length(2))
             .pipe(streamAssert.second(function(file) {
                 assert.equal(file.relative, 'app.min.js');
-                assert.equal(file.contents.toString(), "\"use strict\";angular.module(\"app\").run([\"$templateCache\",function(e){e.put(\"\",\"<h1>Hello</h1><p>world</p>\")}]);\n//# sourceMappingURL=app.min.js.map");
+                assert.equal(file.contents.toString(), "\"use strict\";angular.module(\"app\").run([\"$templateCache\",function(e){e.put(\"\",\"<h1>Hello</h1><p>world</p>\")}]);\n//# sourceMappingURL=app.min.js.map\n");
             }))
             .on('end', done);
     });

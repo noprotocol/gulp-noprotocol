@@ -1,6 +1,6 @@
 {
   "name": "gulp-noprotocol",
-  "version": "0.5.3",
+  "version": "0.6.0",
   "description": "NoProtocol's Best Practices for Gulp",
   "main": "noprotocol.js",
   "repository": {

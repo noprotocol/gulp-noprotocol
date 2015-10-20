@@ -1,7 +1,7 @@
 Gulp NoProtocol
 ----------------
 
-[![Build Status](https://travis-ci.org/NoProtocol/gulp-noprotocol.png)](https://travis-ci.org/NoProtocol/gulp-noprotocol)
+[![Build Status](https://travis-ci.org/noprotocol/gulp-noprotocol.png)](https://travis-ci.org/noprotocol/gulp-noprotocol)
 
 Optimised gulp pipelines for css and javascript.
 

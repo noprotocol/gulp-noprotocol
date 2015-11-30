@@ -18,7 +18,7 @@ describe('noprocotol.angular', function () {
             }))
             .pipe(streamAssert.second(function(file) {
                 assert.equal(file.relative, 'app.min.js');
-                assert.equal(file.contents.toString(), "\"use strict\";var app=angular.module(\"app\",[\"ngAnimate\"]);app.controller(\"TestCtrl\",[\"$scope\",function(r){return!0}]);\n//# sourceMappingURL=app.min.js.map\n");
+                assert.equal(file.contents.toString(), "\"use strict\";var app=angular.module(\"app\",[\"ngAnimate\"]);app.controller(\"TestCtrl\",[\"$scope\",function(r){r.x;return!0}]);\n//# sourceMappingURL=app.min.js.map\n");
             }))
             .on('end', done);
     });

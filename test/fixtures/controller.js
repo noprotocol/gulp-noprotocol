@@ -1,4 +1,5 @@
 app.controller('TestCtrl', function ($scope) {
+	var {x} = $scope;
 	return true;
-	console.log('contructed');
+	console.log('dead code');
 });

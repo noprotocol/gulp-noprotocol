@@ -18,7 +18,7 @@ describe('noprocotol.js', function () {
             }))
             .pipe(streamAssert.second(function(file) {
                 assert.equal(file.relative, 'controller.js');
-                assert.equal(file.contents.toString(), "\"use strict\";app.controller(\"TestCtrl\",[\"$scope\",function(t){return!0}]);\n//# sourceMappingURL=controller.js.map\n");
+                assert.equal(file.contents.toString(), "\"use strict\";app.controller(\"TestCtrl\",[\"$scope\",function(t){t.x;return!0}]);\n//# sourceMappingURL=controller.js.map\n");
             }))
             .on('end', done);
     });

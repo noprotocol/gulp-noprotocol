@@ -1,6 +1,6 @@
 {
   "name": "gulp-noprotocol",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "NoProtocol's Best Practices for Gulp",
   "main": "noprotocol.js",
   "repository": {
@@ -13,6 +13,8 @@
   },
   "dependencies": {
     "autoprefixer": "^6.1.1",
+    "babel-preset-es2015": "^6.1.18",
+    "babel-preset-react": "^6.1.18",
     "css-mqpacker": "^4.0.0",
     "csswring": "^4.0.0",
     "event-stream": "^3.2.1",

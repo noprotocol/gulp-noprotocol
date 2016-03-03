@@ -15,33 +15,37 @@ npm install gulp-livereload --save
 
 ## Usage
 
-The noprotocol.*() streams use multiple preconfigured gulp plugins, which can be toggled byu setting the options to `false`.
+The noprotocol.*() streams use multiple preconfigured gulp plugins, which can be toggled by setting the option to `false`.
 For example `noprotocol.css({minify: false});` disables the minification step, but will still compile sass & run the autoprefixer.  
 
 ### noprotocol.css(options)
 Create an minified, sourcemapped, autoprefixed stylesheet from sass or css files.
 
-**Options**  
-autoprefixer: Options for autoprefixer (default: {browsers: ['Last 2 versions', 'IE >= 9']})
-minify: {Bool} Enables csswring (default: true)
-sass: Options for gulp-sass (defaults: {outputStyle: "compressed"})
-sourcemaps: Options for gulp-sourcemaps.init  (default: {})
+**Options**
+
+* autoprefixer: Options for autoprefixer (default: {browsers: ['Last 2 versions', 'IE >= 9']})
+* minify: {Bool} Enables csswring (default: true)
+* sass: Options for gulp-sass (defaults: {outputStyle: "compressed"})
+* sourcemaps: Options for gulp-sourcemaps.init  (default: {})
 
 ### noprotocol.js(options)
 Create an minified, sourcemapped, transpiled javascript from ES5 / ES6 files.
 
-**Options**  
-annotate: Options for gulp-ng-annotate (default: false)
-babel: Options for gulp-babel (default: {presets: ['es2015', 'react']})
-bundle: {String} Concat the files into one file. (default: false) 
-minify: Options for gulp-uglify (default: {})
-sourcemaps: Options for gulp-sourcemaps.init  (default: {})  
+**Options**
+
+* annotate: Options for gulp-ng-annotate (default: false)
+* babel: Options for gulp-babel (default: {presets: ['es2015', 'react']})
+* bundle: {String} Concat the files into one file. (default: false) 
+* minify: Options for gulp-uglify (default: {})
+* sourcemaps: Options for gulp-sourcemaps.init  (default: {})  
 
 ### noprotocol.bundle(filename, options)
 Similar to gulp-concat but with sourcemaps enabled.
 
-**Options**  
-sourcemaps: Options for gulp-sourcemaps.init  (default: {})
+**Options**
+
+* sourcemaps: Options for gulp-sourcemaps.init  (default: {})
+
 ### noprotocol.angular(options)
 Create a minified, sourcemapped, transpiled, angular module bundle.
 

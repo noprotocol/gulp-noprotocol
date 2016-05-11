@@ -16,7 +16,7 @@ describe('noprocotol.css', function () {
             }))
             .pipe(streamAssert.second(function(file) {
                 assert.equal(file.relative, 'basic.css');
-                assert.equal(file.contents.toString(), "body{color:blue}\n/*# sourceMappingURL=basic.css.map */\n");
+                assert.equal(file.contents.toString(), "body{color:#00f}\n/*# sourceMappingURL=basic.css.map */\n");
             }))
             .on('end', done);
     });

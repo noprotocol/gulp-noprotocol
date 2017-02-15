@@ -8,7 +8,6 @@ var fixtureDir = __dirname + '/fixtures/';
 describe('noprocotol.angular', function () {
 
     it('generates a js bundle and a sourcemap file', function (done) {
-        this.timeout(15000); // travis need a little more time.
         gulp.src(fixtureDir + 'controller.js')
             .pipe(noprocotol.angular({
                 deps: ['ngAnimate'] // Genereate an angular.module()

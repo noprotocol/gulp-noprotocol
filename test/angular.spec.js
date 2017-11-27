@@ -29,7 +29,7 @@ describe('noprocotol.angular', function () {
             .pipe(streamAssert.length(2))
             .pipe(streamAssert.second(function(file) {
                 assert.equal(file.relative, 'app.min.js');
-                assert.equal(file.contents.toString(), "\"use strict\";angular.module(\"app\").run([\"$templateCache\",function(e){e.put(\"\",\"<h1>Hello</h1><p>world</p>\")}]);\n//# sourceMappingURL=app.min.js.map\n");
+                assert.equal(file.contents.toString(), "\"use strict\";+function(){var t;try{t=angular.module(\"app\")}catch(l){t=angular.module(\"app\",[])}t.run([\"$templateCache\",function(t){t.put(\"/test/fixtures/hello.html\",\"<h1>Hello</h1><p>world</p>\")}])}();\n//# sourceMappingURL=app.min.js.map\n");
             }))
             .on('end', done);
     });

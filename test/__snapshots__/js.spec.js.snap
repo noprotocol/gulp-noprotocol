@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`noprocotol.js generates js and a sourcemap file 1`] = `
+"\\"use strict\\";app.controller(\\"TestCtrl\\",[\\"$scope\\",function(t){t.x;return!0}]);
+//# sourceMappingURL=controller.js.map
+"
+`;

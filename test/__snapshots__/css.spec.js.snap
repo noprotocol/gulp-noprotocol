@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`noprocotol.css accepts regular css 1`] = `
+"button:hover{-webkit-transform:scale(1.1);transform:scale(1.1)}
+/*# sourceMappingURL=noprefix.css.map */
+"
+`;
+
+exports[`noprocotol.css generates css and a sourcemap file 1`] = `
+"body{color:#00f}
+/*# sourceMappingURL=basic.css.map */
+"
+`;

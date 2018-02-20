@@ -1,36 +1,44 @@
-"use strict";
-var gulp = require('gulp');
-var assert = require('assert');
-var streamAssert = require('stream-assert-gulp');
-var noprocotol = require("../");
-var fixtureDir = __dirname + '/fixtures/';
+const gulp = require("gulp");
+const streamAssert = require("stream-assert-gulp");
+const noprocotol = require("../");
+const fixtureDir = __dirname + "/fixtures/";
 
-describe('noprocotol.angular', function () {
+describe("noprocotol.angular", function() {
+  it("generates a js bundle and a sourcemap file", function(done) {
+    gulp
+      .src(fixtureDir + "controller.js")
+      .pipe(
+        noprocotol.angular({
+          deps: ["ngAnimate"] // Genereate an angular.module()
+        })
+      )
+      .pipe(streamAssert.length(2))
+      .pipe(
+        streamAssert.first(function(file) {
+          expect(file.relative).toBe("app.min.js.map");
+        })
+      )
+      .pipe(
+        streamAssert.second(function(file) {
+          expect(file.relative).toBe("app.min.js");
 
-    it('generates a js bundle and a sourcemap file', function (done) {
-        gulp.src(fixtureDir + 'controller.js')
-            .pipe(noprocotol.angular({
-                deps: ['ngAnimate'] // Genereate an angular.module()
-            }))
-            .pipe(streamAssert.length(2))
-            .pipe(streamAssert.first(function(file) {
-                assert.equal(file.relative, 'app.min.js.map');
-            }))
-            .pipe(streamAssert.second(function(file) {
-                assert.equal(file.relative, 'app.min.js');
-                assert.equal(file.contents.toString(), "\"use strict\";var app=angular.module(\"app\",[\"ngAnimate\"]);app.controller(\"TestCtrl\",[\"$scope\",function(r){r.x;return!0}]);\n//# sourceMappingURL=app.min.js.map\n");
-            }))
-            .on('end', done);
-    });
+          expect(file.contents.toString()).toMatchSnapshot();
+        })
+      )
+      .on("end", done);
+  });
 
-    it('places html files into the $templateCache', function (done) {
-        gulp.src(fixtureDir + '**/hello.html')
-            .pipe(noprocotol.angular())
-            .pipe(streamAssert.length(2))
-            .pipe(streamAssert.second(function(file) {
-                assert.equal(file.relative, 'app.min.js');
-                assert.equal(file.contents.toString(), "\"use strict\";+function(){var t;try{t=angular.module(\"app\")}catch(l){t=angular.module(\"app\",[])}t.run([\"$templateCache\",function(t){t.put(\"/test/fixtures/hello.html\",\"<h1>Hello</h1><p>world</p>\")}])}();\n//# sourceMappingURL=app.min.js.map\n");
-            }))
-            .on('end', done);
-    });
+  it("places html files into the $templateCache", function(done) {
+    gulp
+      .src(fixtureDir + "**/hello.html")
+      .pipe(noprocotol.angular())
+      .pipe(streamAssert.length(2))
+      .pipe(
+        streamAssert.second(function(file) {
+          expect(file.relative).toBe("app.min.js");
+          expect(file.contents.toString()).toMatchSnapshot();
+        })
+      )
+      .on("end", done);
+  });
 });

@@ -7,7 +7,7 @@ exports[`noprocotol.angular generates a js bundle and a sourcemap file 1`] = `
 `;
 
 exports[`noprocotol.angular places html files into the $templateCache 1`] = `
-"\\"use strict\\";!function(){var t;try{t=angular.module(\\"app\\")}catch(l){t=angular.module(\\"app\\",[])}t.run([\\"$templateCache\\",function(t){t.put(\\"/test/fixtures/hello.html\\",\\"<h1>Hello</h1><p>world</p>\\")}])}();
+"\\"use strict\\";!function(){var l;try{l=angular.module(\\"app\\")}catch(t){l=angular.module(\\"app\\",[])}l.run([\\"$templateCache\\",function(t){t.put(\\"/test/fixtures/hello.html\\",\\"<h1>Hello</h1><p>world</p>\\")}])}();
 //# sourceMappingURL=app.min.js.map
 "
 `;

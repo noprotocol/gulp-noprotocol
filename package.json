@@ -1,6 +1,6 @@
 {
   "name": "gulp-noprotocol",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "NoProtocol's Best Practices for Gulp",
   "license": "MIT",
   "main": "noprotocol.js",
@@ -14,9 +14,10 @@
   },
   "dependencies": {
     "autoprefixer": "^9.3.1",
+    "babel-core": "^6.26.3",
     "babel-preset-env": "^1.6.1",
-    "event-stream": "3.3.4",
-    "gulp-babel": "^7.0.1",
+    "event-stream": "^4.0.1",
+    "gulp-babel": "7",
     "gulp-concat": "^2.4.3",
     "gulp-ng-annotate": "^2.1.0",
     "gulp-postcss": "^8.0.0",
@@ -31,8 +32,8 @@
     "vinyl": "^2.1.0"
   },
   "devDependencies": {
-    "gulp": "^3.9.1",
-    "jest": "^23.6.0",
+    "gulp": "^4.0.2",
+    "jest": "^24.8.0",
     "stream-assert-gulp": "^0.4.9"
   },
   "scripts": {

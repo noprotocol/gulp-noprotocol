@@ -28,7 +28,7 @@
     "gulp-util": "^3.0.8",
     "node-notifier": "^5.2.1",
     "postcss-csso": "^3.0.0",
-    "snyk": "^1.189.0",
+    "snyk": "^1.228.3",
     "stream-combiner2": "^1.0.2",
     "vinyl": "^2.1.0"
   },

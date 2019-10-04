@@ -26,7 +26,7 @@
     "gulp-templatecache": "^0.1.0",
     "gulp-uglify": "^3.0.0",
     "gulp-util": "^3.0.8",
-    "node-notifier": "^5.2.1",
+    "node-notifier": "^5.4.3",
     "postcss-csso": "^3.0.0",
     "snyk": "^1.230.5",
     "stream-combiner2": "^1.0.2",

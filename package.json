@@ -13,7 +13,7 @@
     "url": "https://github.com/NoProtocol/gulp-noprotocol/issues"
   },
   "dependencies": {
-    "autoprefixer": "^9.3.1",
+    "autoprefixer": "^9.6.5",
     "babel-core": "^6.26.3",
     "babel-preset-env": "^1.6.1",
     "event-stream": "^4.0.1",
